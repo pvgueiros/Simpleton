@@ -64,20 +64,17 @@ struct ImageRepository: ImageRepositoryProtocol {
     }
     
     func getImageData(forId id: String, url: String, isLarge: Bool = false) async throws -> Data {
-        if let cachedData = try getImageData(forId: id, isLarge: isLarge) {
-            print("✅ Found image data in cache")
+        if let cachedData = try getImageDataFromCache(forId: id, isLarge: isLarge) {
+            print("✅ Found image data in cache\(isLarge ? ": large" : "")")
             return cachedData
         }
         
-        print("🔄 Downloading image data from URL...")
-        guard let url = URL(string: url) else {
-            throw URLError(.badURL)
-        }
+        print("🔄 Downloading \(isLarge ? "large " : "")image data from URL...")
+        let data = try await getImageDataFromRemote(url: url)
         
-        let (data, _) = try await URLSession.shared.data(from: url)
         do {
             try saveImageData(data, forId: id, isLarge: isLarge)
-            print("✅ Saved image data to cache")
+            print("✅ Saved image data to cache\(isLarge ? ": large" : "")")
         } catch {
             print("❌ Could not save image data to cache")
         }
@@ -85,7 +82,16 @@ struct ImageRepository: ImageRepositoryProtocol {
         return data
     }
     
-    private func getImageData(forId id: String, isLarge: Bool) throws -> Data? {
+    private func getImageDataFromRemote(url: String) async throws -> Data {
+        guard let url = URL(string: url) else {
+            throw URLError(.badURL)
+        }
+        
+        let (data, _) = try await URLSession.shared.data(from: url)
+        return data
+    }
+    
+    private func getImageDataFromCache(forId id: String, isLarge: Bool) throws -> Data? {
         try localDataManager.getImageData(forId: id, isLarge: isLarge)
     }
     

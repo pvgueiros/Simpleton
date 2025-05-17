@@ -44,11 +44,13 @@ struct ImageGridView: View {
         ScrollView {
             HStack {
                 Text("Select an Image to see its detail")
+                    .accessibilityIdentifier("descriptionText")
                 Spacer()
             }
             .padding()
             gridView(for: images)
         }
+        .accessibilityIdentifier("scrollView")
         .refreshable {
             await viewModel.getImages(isRefreshing: true)
         }
@@ -60,9 +62,11 @@ struct ImageGridView: View {
             ForEach(images) { image in
                 NavigationLink(value: image) {
                     imageView(for: image)
+                        .accessibilityIdentifier("imageView")
                 }
             }
         }
+        .accessibilityIdentifier("gridView")
         .navigationDestination(for: SimpletonImage.self) { image in
             if let viewModel = viewModel.detailViewModel(forId: image.id) {
                 ImageDetailView(viewModel: viewModel)
@@ -72,6 +76,7 @@ struct ImageGridView: View {
     
     @ViewBuilder
     func imageView(for image: SimpletonImage) -> some View {
+        let _ = print("imageView_\(image.id)")
         if let viewModel = viewModel.detailViewModel(forId: image.id) {
             CachedAsyncImage(viewModel: viewModel, isLarge: false)
                 .frame(width: Constant.imageSize, height: Constant.imageSize)
@@ -81,16 +86,6 @@ struct ImageGridView: View {
 }
 
 #Preview {
-    let remoteDataManager = ImageMockRemoteDataManager()
-    let localDataManager = ImageLocalDataManager()
-    let repository = ImageRepository(
-        remoteDataManager: remoteDataManager,
-        localDataManager: localDataManager
-    )
-    let getImageListUseCase = GetImageListUseCase(repository: repository)
-    let getImageDataUseCase = GetImageDataUseCase(repository: repository)
-    let viewModel = ImageListViewModel(getImageListUseCase: getImageListUseCase, getImageDataUseCase: getImageDataUseCase)
-    
-    ImageGridView(viewModel: viewModel)
+    let dependencyContainer = DependencyContainer()
+    ImageGridView(viewModel: dependencyContainer.makeImageListViewModel())
 }
-

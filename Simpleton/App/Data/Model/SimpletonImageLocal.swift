@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct SimpletonImageLocal: Codable {
+struct SimpletonImageLocal: Codable, Equatable {
     let id: String
     let title: String
     let urls: URLs
@@ -15,7 +15,7 @@ struct SimpletonImageLocal: Codable {
     let username: String
     let timestamp: Date
     
-    struct URLs: Codable {
+    struct URLs: Codable, Equatable {
         let small: String
         let large: String
     }

@@ -33,11 +33,15 @@ struct ImageDetailView: View {
             HStack {
                 Image(systemName: "heart")
                 Text(viewModel.formattedLikes)
+                    .accessibilityIdentifier("likes")
                 Spacer()
             }
             HStack(alignment: .top) {
-                Text(viewModel.username).bold()
+                Text(viewModel.username)
+                    .bold()
+                    .accessibilityIdentifier("username")
                 Text(viewModel.title)
+                    .accessibilityIdentifier("title")
                 Spacer()
             }
             Spacer()
@@ -45,6 +49,11 @@ struct ImageDetailView: View {
     }
 }
 
-//#Preview {
-//
-//}
+#Preview {
+    let dependencyContainer = DependencyContainer()
+    let mockRemoteDataManager = MockImageRemoteDataManager()
+    
+    if let image = try? mockRemoteDataManager.getImages().first?.toDomain() {
+        ImageDetailView(viewModel: ImageDetailViewModel(getImageDataUseCase: dependencyContainer.getImageDataUseCase, image: image))
+    }
+}

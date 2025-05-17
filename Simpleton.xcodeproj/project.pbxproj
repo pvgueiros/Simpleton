@@ -29,6 +29,18 @@
 		CA9AFD512DA0D373007ACCDA /* SimpletonUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SimpletonUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		CA2163F82DD81D4100A82E7C /* Exceptions for "SimpletonTests" folder in "Simpleton" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"Data/Data Managers/Remote/ImageResponse.json",
+				"Data/Data Managers/Remote/MockFileManager.swift",
+				"Data/Data Managers/Remote/MockImageRemoteDataManager.swift",
+			);
+			target = CA9AFD342DA0D372007ACCDA /* Simpleton */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		CA9AFD372DA0D372007ACCDA /* Simpleton */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
@@ -37,6 +49,9 @@
 		};
 		CA9AFD4A2DA0D373007ACCDA /* SimpletonTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				CA2163F82DD81D4100A82E7C /* Exceptions for "SimpletonTests" folder in "Simpleton" target */,
+			);
 			path = SimpletonTests;
 			sourceTree = "<group>";
 		};

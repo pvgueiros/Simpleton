@@ -8,5 +8,5 @@
 import Foundation
 
 protocol ImageRemoteDataManagerProtocol {
-    func getImages() async throws -> [SimpletonImageResponse]
+    func getImages() async throws -> [SimpletonImageDTO]
 }

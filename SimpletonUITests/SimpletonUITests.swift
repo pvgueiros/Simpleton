@@ -8,36 +8,53 @@
 import XCTest
 
 final class SimpletonUITests: XCTestCase {
+    var app = XCUIApplication()
+    let defaultTimeout: TimeInterval = 5
 
     override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-
+        app.launch()
+        
         // In UI tests it is usually best to stop immediately when a failure occurs.
         continueAfterFailure = false
-
-        // In UI tests it’s important to set the initial state - such as interface orientation - required for your tests before they run. The setUp method is a good place to do this.
     }
 
     override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+        
     }
 
+   @MainActor
+   func testAppStartsEmpty() {
+       XCTAssertEqual(app.images.count, 0, "There should be 0 images when the app is first launched.")
+   }
+    
     @MainActor
-    func testExample() throws {
-        // UI tests must launch the application that they test.
-        let app = XCUIApplication()
-        app.launch()
-
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+    func testInitialAppLaunch() throws {
+        let navigationBar = app.navigationBars["Image Grid"]
+        XCTAssertTrue(navigationBar.waitForExistence(timeout: defaultTimeout))
+        
+        let descriptionText = app.staticTexts["descriptionText"]
+        XCTAssertTrue(descriptionText.exists)
+        
+        let gridView = app.otherElements["gridView"]
+        XCTAssertTrue(gridView.exists)
     }
-
+    
     @MainActor
-    func testLaunchPerformance() throws {
-        if #available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *) {
-            // This measures how long it takes to launch your application.
-            measure(metrics: [XCTApplicationLaunchMetric()]) {
-                XCUIApplication().launch()
-            }
-        }
+    func testImageDetailNavigation() throws {
+        let gridView = app.otherElements["gridView"]
+        XCTAssertTrue(gridView.waitForExistence(timeout: defaultTimeout))
+        
+        app.buttons.matching(identifier: "imageView").element(boundBy: 0).tap()
+        
+        XCTAssertTrue(app.images.element(boundBy: 0).waitForExistence(timeout: defaultTimeout))
+        XCTAssertTrue(app.navigationBars["Image Detail"].exists)
+        XCTAssertTrue(app.images["heart"].exists)
+        XCTAssertTrue(app.staticTexts["likes"].exists)
+        XCTAssertTrue(app.staticTexts["username"].exists)
+        XCTAssertTrue(app.staticTexts["title"].exists)
+        
+        app.buttons["Image Grid"].tap()
+        
+        XCTAssertTrue(app.navigationBars["Image Grid"].exists)
     }
 }
